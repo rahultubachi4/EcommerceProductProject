@@ -20,7 +20,6 @@
       <th>Stock</th>
       <th>Details</th>
       <th>Images</th>
-
     </tr>
     </thead>
 
@@ -33,7 +32,28 @@
       <td th:text="${product.stock}"></td>
       <td th:text="${product.details}"></td>
       <td th:text="${product.images}"></td>
+      <td>
 
+
+        <form th:action="@{/addToCart}" method="post">
+          <input type="hidden" name="productId" th:value="${product.id}">
+          <input type="hidden" name="productName" th:value="${product.name}">
+          <input type="hidden" name="productCode" th:value="${product.code}">
+          <input type="hidden" name="productStock" th:value="${product.stock}">
+          <input type="hidden" name="productDetails" th:value="${product.details}">
+          <input type="hidden" name="productImages" th:value="${product.images}">
+
+          <input type="number" name="quantity" min="1" placeholder="Qty" required>
+          <input type="number" name="price" placeholder="Price" required>
+
+
+          <button type="submit" class="btn btn-primary btn-sm"
+                  th:disabled="${product.stock == 0}">Add to Cart</button>
+
+
+        </form>
+
+      </td>
     </tr>
 
     </tbody>
