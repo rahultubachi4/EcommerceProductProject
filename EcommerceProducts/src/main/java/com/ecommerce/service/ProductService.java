@@ -60,12 +60,13 @@ public class ProductService
 
     public void deleteProduct(int id)
     {
-        Optional<Product> productUpdate = repo.findById(id);
+        Optional<Product> product = repo.findById(id);
 
-        if (productUpdate.isEmpty()) {
+        if (product.isEmpty())
+        {
             throw new RuntimeException("Product not deleted ");
         }
-        repo.delete(productUpdate.get());
+        repo.delete(product.get());
     }
 
 

@@ -21,9 +21,9 @@
       <th>Product Images</th>
       <th>Quantity</th>
       <th>Price</th>
-
     </tr>
     </thead>
+
     <tbody>
     <tr th:each="item : ${cartItems}">
       <td th:text="${item.cartId}"></td>
@@ -32,9 +32,7 @@
       <td th:text="${item.productCode}"></td>
       <td th:text="${item.productStock}"></td>
       <td th:text="${item.productDetails}"></td>
-      <td>
-        <img th:src="${item.productImages}" alt="Product Image" style="width: 50px;">
-      </td>
+      <td th:text="${item.productImages}"></td>
       <td th:text="${item.quantity}"></td>
       <td th:text="${item.price}"></td>
     </tr>

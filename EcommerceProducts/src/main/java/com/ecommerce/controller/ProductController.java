@@ -1,7 +1,10 @@
 package com.ecommerce.controller;
 
+import com.ecommerce.entity.Item;
+import com.ecommerce.entity.Order;
 import com.ecommerce.entity.Product;
 import com.ecommerce.entity.ProductCart;
+import com.ecommerce.service.OrderService;
 import com.ecommerce.service.ProductCartService;
 import com.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +13,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
-public class ProductController {
+public class ProductController
+{
 
     @Autowired
     private ProductService service;
@@ -21,9 +26,15 @@ public class ProductController {
     @Autowired
     private ProductCartService cartService;
 
+    @Autowired
+    private OrderService orderService;
+
+
+
 
     @GetMapping("/cart")
-    public String viewCart(Model model) {
+    public String viewCart(Model model)
+    {
         List<ProductCart> cartItems = cartService.fetchCartItems();
         model.addAttribute("cartItems", cartItems);
         return "cartList";
@@ -35,13 +46,15 @@ public class ProductController {
     public String addToCart(@RequestParam int productId, @RequestParam String productName,
                             @RequestParam int quantity, @RequestParam int price,
                             @RequestParam String productCode, @RequestParam String productStock,
-                            @RequestParam String productDetails, @RequestParam String productImages) {
+                            @RequestParam String productDetails, @RequestParam String productImages)
+    {
 
 
         Product product = service.fetchProduct(productId);
 
 
-        if (quantity <= product.getStock()) {
+        if (quantity <= product.getStock())
+        {
 
             ProductCart cart = new ProductCart();
             cart.setCartId((int) (Math.random() * 10000));
@@ -56,21 +69,90 @@ public class ProductController {
 
             cartService.addToCart(cart);
 
-            return "Product added to cart successfully!";
+            return "Product added to cart successfully...!!!!";
+
         } else {
             return "Not enough stock available! Only " + product.getStock() + " items are available.";
         }
     }
 
 
-
-
-
     @GetMapping("/fetchAllCartItems")
     @ResponseBody
-    public List<ProductCart> fetchCartItems() {
+    public List<ProductCart> fetchCartItems()
+    {
         return cartService.fetchCartItems();
     }
+
+
+
+    @GetMapping("/checkout")
+    public String showPaymentForm(Model model)
+    {
+        List<ProductCart> cartItems = cartService.fetchCartItems();
+        int totalOrderPrice = cartItems.stream().mapToInt(item -> item.getPrice() * item.getQuantity()).sum();
+        model.addAttribute("totalOrderPrice", totalOrderPrice);
+        return "checkout";
+    }
+
+
+
+    @PostMapping("/processPayment")
+    public String processPayment(
+            @RequestParam("paymentId") String paymentId,
+            @RequestParam("paymentMethod") String paymentMethod,
+            @RequestParam("paymentStatus") String paymentStatus,
+            @RequestParam("paymentTime") String paymentTime,
+            @RequestParam("customerName") String customerName,
+            @RequestParam("customerAddress") String customerAddress,
+            @RequestParam("customerZipCode") String customerZipCode,
+            Model model
+    )
+    {
+
+        List<ProductCart> cartItems = cartService.fetchCartItems();
+
+
+        List<Item> items = cartItems.stream().map(cartItem -> {
+            Item item = new Item();
+            item.setItemId("ITEM" + (int) (Math.random() * 10000));
+            item.setProductName(cartItem.getProductName());
+            item.setProductCode(cartItem.getProductCode());
+            item.setPrice(cartItem.getPrice());
+            item.setQuantity(cartItem.getQuantity());
+            item.setTotalQuantity(cartItem.getPrice() * cartItem.getQuantity());
+            return item;
+        }).collect(Collectors.toList());
+
+
+        Order order = new Order();
+        order.setOrderId("ORD" + (int) (Math.random() * 10000));
+        order.setCustomerName(customerName);
+        order.setCustomerAddress(customerAddress);
+        order.setCustomerZipCode(customerZipCode);
+        order.setItems(items);
+        orderService.placeOrder(order);
+
+
+        model.addAttribute("paymentId", paymentId);
+        model.addAttribute("paymentMethod", paymentMethod);
+        model.addAttribute("paymentStatus", paymentStatus);
+        model.addAttribute("paymentTime", paymentTime);
+        model.addAttribute("order", order);
+
+        return "paymentSuccess";
+    }
+
+
+
+
+    @GetMapping("/fetchAllOrders")
+    @ResponseBody
+    public List<Order> fetchOrder()
+    {
+        return orderService.fetchOrder();
+    }
+
 
 
 

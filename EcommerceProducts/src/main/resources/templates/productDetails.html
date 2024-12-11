@@ -16,7 +16,7 @@
         <div class="card-body">
             <h5 class="card-title" th:text="${product.name}">Product Name</h5>
             <p class="card-text">Code: <span th:text="${product.code}">Product Code</span></p>
-            <p class="card-text">Stock: <span th:text="${product.stock}">Stock Amount</span></p>
+            <p class="card-text">Stock: <span th:text="${product.stock}">Product Stock </span></p>
             <p class="card-text">Details: <span th:text="${product.details}">Product Details</span></p>
             <p class="card-text">Images: <img th:src="@{${product.images}}" alt="Product Image" class="img-fluid"></p>
         </div>

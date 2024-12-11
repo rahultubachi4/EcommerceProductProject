@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.rtl.min.css">
+</head>
+<body>
+
+<div class="container mt-4">
+
+    <h1>Payment Form</h1>
+
+    <form action="/processPayment" method="post">
+
+
+        <div class="mb-3">
+            <label for="customerName" class="form-label">Customer Name</label>
+            <input type="text" id="customerName" name="customerName" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="customerAddress" class="form-label">Customer Address</label>
+            <input type="text" id="customerAddress" name="customerAddress" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="customerZipCode" class="form-label">Customer Zip Code</label>
+            <input type="text" id="customerZipCode" name="customerZipCode" class="form-control" required>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="paymentId" class="form-label">Payment ID</label>
+            <input type="text" id="paymentId" name="paymentId" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="paymentMethod" class="form-label">Payment Method</label>
+            <select id="paymentMethod" name="paymentMethod" class="form-control" required>
+                <option value="">Select Method</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="Debit Card">Debit Card</option>
+                <option value="Cash">Cash</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="paymentStatus" class="form-label">Payment Status</label>
+            <select id="paymentStatus" name="paymentStatus" class="form-control" required>
+                <option value="">Select Status</option>
+                <option value="Success">Success</option>
+                <option value="Pending">Pending</option>
+                <option value="Failed">Failed</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="paymentTime" class="form-label">Payment Time</label>
+            <input type="datetime-local" id="paymentTime" name="paymentTime" class="form-control" required>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Submit Payment</button>
+        <a href="/cart" class="btn btn-secondary">Back to Cart</a>
+    </form>
+
+</div>
+
+</body>
+</html>
