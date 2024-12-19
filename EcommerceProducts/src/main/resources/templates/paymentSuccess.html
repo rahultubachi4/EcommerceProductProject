@@ -8,13 +8,18 @@
 </head>
 <body>
 <div class="container mt-4">
-    <h1>Payment Successfulll!</h1>
+    <h1>Payment Successful!</h1>
 
     <p><strong>Order ID:</strong> <span th:text="${order.orderId}"></span></p>
     <p><strong>Customer Name:</strong> <span th:text="${order.customerName}"></span></p>
     <p><strong>Customer Address:</strong> <span th:text="${order.customerAddress}"></span></p>
     <p><strong>Customer Zip Code:</strong> <span th:text="${order.customerZipCode}"></span></p>
     <p><strong>Total Order Price:</strong> <span th:text="${order.totalOrderPrice}"></span></p>
+
+    <p><strong>Payment ID:</strong> <span th:text="${paymentId}"></span></p>
+    <p><strong>Payment Method:</strong> <span th:text="${paymentMethod}"></span></p>
+    <p><strong>Payment Status:</strong> <span th:text="${paymentStatus}"></span></p>
+    <p><strong>Payment Time:</strong> <span th:text="${paymentTime}"></span></p>
 
     <h3>Items:</h3>
     <ul>
@@ -28,7 +33,11 @@
         </li>
     </ul>
 
+<div class="btn" style="  margin-right: 10px;">
     <a href="/showProducts" class="btn btn-success">Continue Shopping</a>
+    <a href="/cart" class="btn btn-success">Check Cart</a>
+</div>
+
 </div>
 </body>
 </html>

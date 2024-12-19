@@ -4,6 +4,7 @@ import com.ecommerce.entity.Product;
 import com.ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +24,10 @@ public class ProductService
     }
 
 
+
     public List<Product> fetchAllProduct()
     {
-        return repo.findAll();
+        return repo.findAll(Sort.by(Sort.Direction.ASC,"id"));
     }
 
 
@@ -41,8 +43,8 @@ public class ProductService
     }
 
 
-    public Product updateProduct(Product product)
-    {
+       public Product updateProduct(Product product)
+       {
         Optional<Product> productUpdate = repo.findById(product.getId());
 
         if (productUpdate.isEmpty())
@@ -52,7 +54,11 @@ public class ProductService
 
         Product existingProduct = productUpdate.get();
         existingProduct.setStock(product.getStock());
-        existingProduct.setDetails(product.getDetails());
+
+        if (existingProduct.getDetails() == null)
+        {
+            existingProduct.setDetails(product.getDetails());
+        }
         existingProduct.setImages(product.getImages());
         return repo.save(existingProduct);
     }
@@ -79,6 +85,20 @@ public class ProductService
     public List<Product> findByCurrentStock()
     {
         return repo.findByStockLessThan(10);
+    }
+
+
+    public Product updateProductStock(int productId, int newStock)
+    {
+        Optional<Product> productNew = repo.findById(productId);
+        if (productNew.isEmpty())
+        {
+            throw new RuntimeException("Product not found");
+        }
+
+        Product product = productNew.get();
+        product.setStock(newStock);
+        return repo.save(product);
     }
 
 

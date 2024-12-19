@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,18 +44,23 @@ public class ProductController
 
     @PostMapping("/addToCart")
     @ResponseBody
-    public String addToCart(@RequestParam int productId, @RequestParam String productName,
-                            @RequestParam int quantity, @RequestParam int price,
-                            @RequestParam String productCode, @RequestParam String productStock,
-                            @RequestParam String productDetails, @RequestParam String productImages)
-    {
-
+    public String addToCart(@RequestParam int productId,
+                            @RequestParam String productName,
+                            @RequestParam int quantity,
+                            @RequestParam int price,
+                            @RequestParam String productCode,
+                            @RequestParam String productStock,
+                            @RequestParam String productDetails,
+                            @RequestParam String productImages) {
 
         Product product = service.fetchProduct(productId);
 
 
-        if (quantity <= product.getStock())
-        {
+        if (quantity <= product.getStock()) {
+
+            product.setStock(product.getStock() - quantity);
+            service.updateProduct(product);
+
 
             ProductCart cart = new ProductCart();
             cart.setCartId((int) (Math.random() * 10000));
@@ -69,12 +75,16 @@ public class ProductController
 
             cartService.addToCart(cart);
 
-            return "Product added to cart successfully...!!!!";
-
+            return "<p>Product added to cart successfully...!!!!</p>"
+                    + "<button onclick=\"window.location.href='/cart'\">Go to Cart</button>";
         } else {
-            return "Not enough stock available! Only " + product.getStock() + " items are available.";
+
+            return "<p>Not enough stock available! Only " + product.getStock() + " items are available.</p>"
+                    + "<button onclick=\"window.location.href='/showProducts'\">Show Products</button>";
         }
     }
+
+
 
 
     @GetMapping("/fetchAllCartItems")
@@ -107,11 +117,12 @@ public class ProductController
             @RequestParam("customerAddress") String customerAddress,
             @RequestParam("customerZipCode") String customerZipCode,
             Model model
-    )
-    {
-
+    ) {
         List<ProductCart> cartItems = cartService.fetchCartItems();
 
+        if (cartItems.isEmpty()) {
+            throw new RuntimeException("Cart is empty, no items to process.");
+        }
 
         List<Item> items = cartItems.stream().map(cartItem -> {
             Item item = new Item();
@@ -124,15 +135,21 @@ public class ProductController
             return item;
         }).collect(Collectors.toList());
 
-
         Order order = new Order();
         order.setOrderId("ORD" + (int) (Math.random() * 10000));
         order.setCustomerName(customerName);
         order.setCustomerAddress(customerAddress);
         order.setCustomerZipCode(customerZipCode);
         order.setItems(items);
+        order.setPaymentId(paymentId);
+        order.setPaymentMethod(paymentMethod);
+        order.setPaymentStatus(paymentStatus);
+        order.setPaymentTime(paymentTime);
+
         orderService.placeOrder(order);
 
+
+        cartService.clearCart();
 
         model.addAttribute("paymentId", paymentId);
         model.addAttribute("paymentMethod", paymentMethod);
@@ -142,6 +159,8 @@ public class ProductController
 
         return "paymentSuccess";
     }
+
+
 
 
 
@@ -165,6 +184,9 @@ public class ProductController
         model.addAttribute("products", products);
         return "productList";
     }
+
+
+
 
 
 
@@ -262,5 +284,14 @@ public class ProductController
     {
         return service.findByCurrentStock();
     }
+
+    @PostMapping("/removeFromCart")
+    public String removeFromCart(@RequestParam int cartId)
+    {
+        cartService.removeCartItem(cartId);
+        return "redirect:/cart";
+    }
+
+
 
 }

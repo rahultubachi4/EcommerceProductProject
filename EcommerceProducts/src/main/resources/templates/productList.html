@@ -33,8 +33,6 @@
       <td th:text="${product.details}"></td>
       <td th:text="${product.images}"></td>
       <td>
-
-
         <form th:action="@{/addToCart}" method="post">
           <input type="hidden" name="productId" th:value="${product.id}">
           <input type="hidden" name="productName" th:value="${product.name}">
@@ -45,7 +43,6 @@
 
           <input type="number" name="quantity" min="1" placeholder="Qty" required>
           <input type="number" name="price" placeholder="Price" required>
-
 
           <button type="submit" class="btn btn-primary btn-sm"
                   th:disabled="${product.stock == 0}">Add to Cart</button>

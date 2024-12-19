@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface ProductCartRepository extends MongoRepository<ProductCart, Integer>
 {
+    void deleteAll();
 
 }

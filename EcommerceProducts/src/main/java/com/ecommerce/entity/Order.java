@@ -28,6 +28,14 @@ public class Order
 
     private int totalOrderPrice;
 
+    private String paymentId;
+
+    private String paymentMethod;
+
+    private String paymentStatus;
+
+    private String paymentTime;
+
 
     private List<Item> items;
 }

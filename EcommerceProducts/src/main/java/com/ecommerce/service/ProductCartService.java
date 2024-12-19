@@ -27,4 +27,19 @@ public class ProductCartService
         return cartRepo.findAll();
     }
 
+
+    public void removeCartItem(int cartId)
+    {
+        cartRepo.deleteById(cartId);
+    }
+
+
+    public void clearCart()
+    {
+        cartRepo.deleteAll();
+    }
+
+
+
+
 }
